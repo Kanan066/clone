@@ -1,0 +1,266 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    body {
+        background: #f5f8ff;
+        font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+        color: #232946;
+    }
+    .catalog-container {
+        display: flex;
+        gap: 2.5rem;
+        max-width: 1200px;
+        margin: 2.5rem auto 2rem auto;
+        padding: 0 1rem;
+    }
+    .sidebar {
+        width: 250px;
+        min-width: 210px;
+        background: #fff;
+        border-radius: 1.1rem;
+        box-shadow: 0 2px 16px rgba(36,81,166,0.07);
+        padding: 1.3rem 1.1rem 1.5rem 1.1rem;
+        height: fit-content;
+    }
+    .sidebar h5 {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: #2451a6;
+        margin-bottom: 1.1rem;
+    }
+    .category-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+    }
+    .category-link {
+        display: block;
+        padding: 0.55rem 1rem;
+        border-radius: 0.7rem;
+        font-size: 1.04rem;
+        color: #232946;
+        text-decoration: none;
+        font-weight: 500;
+        transition: background 0.16s, color 0.16s;
+        margin-bottom: 0.1rem;
+    }
+    .category-link.active, .category-link:hover {
+        background: #e6edfa;
+        color: #2451a6;
+        font-weight: 600;
+    }
+
+    .main-content {
+        flex: 1;
+        min-width: 0;
+    }
+    .sort-row {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 1.7rem;
+    }
+    .sort-select {
+        padding: 0.45rem 1.1rem;
+        border-radius: 1.2rem;
+        border: 1px solid #dbeafe;
+        font-size: 1.03rem;
+        background: #f3f7fd;
+        color: #2451a6;
+        font-weight: 500;
+        outline: none;
+        transition: border 0.15s;
+    }
+    .sort-select:focus {
+        border: 1.5px solid #2451a6;
+    }
+
+    .products-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 2rem;
+    }
+    .product-card {
+        background: #fff;
+        border-radius: 1.2rem;
+        box-shadow: 0 2px 16px rgba(36,81,166,0.08);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        transition: box-shadow 0.18s, transform 0.18s;
+        border: 1px solid #f1f5fa;
+    }
+    .product-card:hover {
+        box-shadow: 0 8px 36px rgba(36,81,166,0.13);
+        transform: translateY(-5px) scale(1.018);
+    }
+    .product-img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        background: #e5e7eb;
+        border-top-left-radius: 1.2rem;
+        border-top-right-radius: 1.2rem;
+    }
+    .product-body {
+        padding: 1.2rem 1rem 0.7rem 1rem;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+    .product-title {
+        font-size: 1.09rem;
+        font-weight: 700;
+        color: #2451a6;
+        margin-bottom: 0.4rem;
+    }
+    .product-desc {
+        color: #4b5563;
+        font-size: 0.98rem;
+        margin-bottom: 1rem;
+        min-height: 2.2em;
+    }
+    .product-info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.7rem;
+    }
+    .product-price {
+        font-weight: 700;
+        color: #27ae60;
+        font-size: 1.07rem;
+    }
+    .badge {
+        font-size: 0.97rem;
+        border-radius: 1rem;
+        padding: 0.25rem 0.9rem;
+        font-weight: 600;
+        background: #e5e7eb;
+        color: #4b5563;
+    }
+    .badge.in-stock {
+        background: #e5fbe7;
+        color: #27ae60;
+    }
+    .badge.out-stock {
+        background: #ffeaea;
+        color: #e74c3c;
+    }
+    .product-footer {
+        padding: 0.8rem 1rem 1.1rem 1rem;
+        background: transparent;
+        border-top: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .btn {
+        display: inline-block;
+        padding: 0.55rem 1.3rem;
+        border-radius: 2rem;
+        font-weight: 600;
+        font-size: 1rem;
+        text-align: center;
+        text-decoration: none;
+        border: none;
+        background: #2451a6;
+        color: #fff;
+        box-shadow: 0 2px 8px rgba(36,81,166,0.08);
+        cursor: pointer;
+        transition: background 0.18s, box-shadow 0.18s;
+    }
+    .btn:hover {
+        background: #1c3a70;
+    }
+    .alert-info {
+        background: #e6edfa;
+        color: #2451a6;
+        border-radius: 0.8rem;
+        padding: 1.2rem 1.1rem;
+        font-size: 1.1rem;
+        margin-top: 2rem;
+    }
+    @media (max-width: 900px) {
+        .catalog-container {
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .sidebar {
+            width: 100%;
+            min-width: 0;
+            margin-bottom: 1.5rem;
+        }
+    }
+    @media (max-width: 600px) {
+        .products-grid { gap: 1rem; }
+        .sidebar { padding: 0.9rem 0.7rem; }
+        .product-img { height: 120px; }
+        .product-body, .product-footer { padding-left: 0.6rem; padding-right: 0.6rem; }
+    }
+</style>
+
+<div class="catalog-container">
+    <!-- Sidebar filters -->
+    <aside class="sidebar">
+        <h5>Categories</h5>
+        <nav class="category-list">
+            <a href="{% url 'store:catalog' %}"
+               class="category-link {% if not request.GET.category %}active{% endif %}">
+                All Categories
+            </a>
+            {% for category in categories %}
+            <a href="{% url 'store:catalog' %}?category={{ category.id }}"
+               class="category-link {% if request.GET.category|default:''|add:'' == category.id|stringformat:"s" %}active{% endif %}">
+                {{ category.name }}
+            </a>
+            {% endfor %}
+        </nav>
+    </aside>
+
+    <!-- Product grid -->
+    <main class="main-content">
+        <div class="sort-row">
+            <form id="sort-form" method="get">
+                {% for key, value in request.GET.items %}
+                    {% if key != 'sort' %}
+                        <input type="hidden" name="{{ key }}" value="{{ value }}">
+                    {% endif %}
+                {% endfor %}
+                <select class="sort-select" name="sort" onchange="this.form.submit()">
+                    <option value="name" {% if request.GET.sort == 'name' %}selected{% endif %}>Sort by: Name</option>
+                    <option value="price_low" {% if request.GET.sort == 'price_low' %}selected{% endif %}>Sort by: Price Low to High</option>
+                    <option value="price_high" {% if request.GET.sort == 'price_high' %}selected{% endif %}>Sort by: Price High to Low</option>
+                </select>
+            </form>
+        </div>
+
+        {% if products %}
+        <div class="products-grid">
+            {% for product in products %}
+            <div class="product-card">
+                <img src="{{ product.image_url }}" class="product-img" alt="{{ product.name }}">
+                <div class="product-body">
+                    <div class="product-title">{{ product.name }}</div>
+                    <div class="product-desc">{{ product.description|truncatechars:100 }}</div>
+                    <div class="product-info-row">
+                        <span class="product-price">${{ product.price|floatformat:2 }}</span>
+                        <span class="badge {% if product.stock > 0 %}in-stock{% else %}out-stock{% endif %}">
+                            {% if product.stock > 0 %}In Stock{% else %}Out of Stock{% endif %}
+                        </span>
+                    </div>
+                </div>
+                <div class="product-footer">
+                    <a href="{% url 'store:product_detail' product.id %}" class="btn">View Details</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert-info">
+            No products found matching your criteria.
+        </div>
+        {% endif %}
+    </main>
+</div>
+{% endblock %}

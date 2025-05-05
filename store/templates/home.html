@@ -1,0 +1,308 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    :root {
+        --primary: #2a5298;
+        --secondary: #1e3c72;
+        --accent: #f8fafc;
+        --text: #232946;
+        --muted: #b8c1ec;
+        --radius: 1.2rem;
+        --shadow: 0 4px 20px rgba(42,82,152,0.12);
+        --highlight: #fbbf24; /* Bright accent for attention */
+    }
+
+    body {
+        background: linear-gradient(135deg, #e0e7ff 0%, #f8fafc 100%);
+        font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+        color: var(--text);
+        margin: 0;
+        padding: 0;
+    }
+
+    .hero-section {
+        margin-bottom: 2.5rem;
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        position: relative;
+        background: var(--accent);
+    }
+
+    .carousel {
+        position: relative;
+        width: 100%;
+        height: 350px;
+        overflow: hidden;
+    }
+
+    .carousel-slide {
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        opacity: 0;
+        transition: opacity 1s ease-in-out;
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    .carousel-slide.active {
+        opacity: 1;
+        z-index: 1;
+        pointer-events: auto;
+    }
+
+    .carousel-slide img {
+        width: 100%; height: 100%;
+        object-fit: cover;
+        filter: brightness(0.85) saturate(1.08);
+    }
+
+    .carousel-caption {
+        position: absolute;
+        left: 0; right: 0; bottom: 0;
+        background: linear-gradient(0deg, rgba(30,60,114,0.85) 65%, rgba(30,60,114,0.45) 100%, transparent 100%);
+        color: #fff;
+        padding: 2.5rem 2rem 1.5rem 2rem;
+        border-bottom-left-radius: var(--radius);
+        border-bottom-right-radius: var(--radius);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    .carousel-caption h2 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        letter-spacing: 1.2px;
+    }
+
+    .carousel-caption p {
+        font-size: 1.2rem;
+        opacity: 0.9;
+    }
+
+    .carousel-controls {
+        position: absolute;
+        top: 50%;
+        left: 0; right: 0;
+        display: flex;
+        justify-content: space-between;
+        transform: translateY(-50%);
+        z-index: 2;
+        padding: 0 1.2rem;
+    }
+
+    .carousel-btn {
+        background: rgba(42,82,152,0.72);
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        width: 3rem;
+        height: 3rem;
+        font-size: 1.5rem;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(30,60,114,0.13);
+        transition: background 0.3s;
+        display: flex; align-items: center; justify-content: center;
+    }
+
+    .carousel-btn:hover {
+        background: var(--highlight);
+        transform: scale(1.1);
+    }
+
+    .featured-products, .categories-section {
+        margin: 2.5rem 0;
+        padding: 0 0.5rem;
+    }
+
+    .section-title {
+        font-size: 2.4rem;
+        font-weight: 700;
+        margin-bottom: 2rem;
+        letter-spacing: 1px;
+        color: var(--secondary);
+        text-shadow: 0 1px 0 #fff;
+        text-align: center;
+    }
+
+    .products-grid, .categories-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 2rem;
+    }
+
+    .card {
+        background: #fff;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.18s, box-shadow 0.18s;
+        will-change: transform;
+        border: 1px solid #f1f5fa;
+    }
+
+    .card:hover {
+        transform: translateY(-8px) scale(1.05);
+        box-shadow: 0 12px 32px rgba(42,82,152,0.18);
+    }
+
+    .card-img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        background: var(--muted);
+        transition: transform 0.3s;
+    }
+
+    .card-img:hover {
+        transform: scale(1.1);
+    }
+
+    .card-body {
+        padding: 1.2rem 1rem 1.2rem 1rem;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+
+    .card-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+    }
+
+    .card-price {
+        font-weight: 700;
+        color: #16a34a;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 0.55rem 1.3rem;
+        border-radius: 2rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+        text-align: center;
+        text-decoration: none;
+        border: none;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        color: #fff;
+        box-shadow: 0 2px 8px rgba(42,82,152,0.08);
+        cursor: pointer;
+        transition: background 0.18s, box-shadow 0.18s;
+    }
+
+    .btn:hover {
+        background: linear-gradient(90deg, var(--secondary), var(--primary));
+        box-shadow: 0 4px 16px rgba(42,82,152,0.13);
+    }
+
+    .btn-outline {
+        background: transparent;
+        color: var(--primary);
+        border: 2px solid var(--primary);
+    }
+
+    .btn-outline:hover {
+        background: var(--primary);
+        color: #fff;
+    }
+
+    @media (max-width: 600px) {
+        .carousel-caption { padding: 1.2rem 0.7rem 1rem 0.7rem; }
+        .carousel-caption h2 { font-size: 1.2rem; }
+        .section-title { font-size: 1.5rem; }
+        .products-grid, .categories-grid { gap: 1.1rem; }
+        .card-img { height: 120px; }
+    }
+</style>
+
+<!-- Hero Section with Custom Carousel -->
+<div class="hero-section">
+    <div class="carousel" id="customCarousel">
+        {% for category in categories|slice:":3" %}
+        <div class="carousel-slide {% if forloop.first %}active{% endif %}">
+            <img src="{{ category.banner_url }}" alt="{{ category.name }}">
+            <div class="carousel-caption">
+                <h2>{{ category.name }}</h2>
+                <p>{{ category.description }}</p>
+            </div>
+        </div>
+        {% endfor %}
+        <div class="carousel-controls">
+            <button class="carousel-btn" id="carouselPrev" aria-label="Previous">&#8592;</button>
+            <button class="carousel-btn" id="carouselNext" aria-label="Next">&#8594;</button>
+        </div>
+    </div>
+</div>
+
+<!-- Featured Products -->
+<div class="featured-products">
+    <div class="section-title">🌟 Featured Products</div>
+    <div class="products-grid">
+        {% for product in featured_products %}
+        <div class="card">
+            <img src="{{ product.image_url }}" class="card-img" alt="{{ product.name }}">
+            <div class="card-body">
+                <div class="card-title">{{ product.name }}</div>
+                <div class="card-price">${{ product.price|floatformat:2 }}</div>
+                <a href="{% url 'store:product_detail' product.id %}" class="btn">View Details</a>
+            </div>
+        </div>
+        {% empty %}
+        <div style="grid-column: 1 / -1; color: #666;">No featured products available at the moment.</div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Shop by Category -->
+<div class="categories-section">
+    <div class="section-title">🛒 Shop by Category</div>
+    <div class="categories-grid">
+        {% for category in categories %}
+        <div class="card">
+            <img src="{{ category.banner_url }}" class="card-img" alt="{{ category.name }}">
+            <div class="card-body">
+                <div class="card-title">{{ category.name }}</div>
+                <div class="card-text">{{ category.description }}</div>
+                <a href="{% url 'store:catalog' %}?category={{ category.id }}" class="btn btn-outline">Browse Products</a>
+            </div>
+        </div>
+        {% empty %}
+        <div style="grid-column: 1 / -1; color: #666;">No categories found.</div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Pure JS Carousel (no dependency) -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const slides = document.querySelectorAll('#customCarousel .carousel-slide');
+        let current = 0;
+        function showSlide(idx) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === idx);
+            });
+        }
+        document.getElementById('carouselPrev').onclick = function () {
+            current = (current - 1 + slides.length) % slides.length;
+            showSlide(current);
+        };
+        document.getElementById('carouselNext').onclick = function () {
+            current = (current + 1) % slides.length;
+            showSlide(current);
+        };
+        // Auto-slide every 7s
+        setInterval(function () {
+            current = (current + 1) % slides.length;
+            showSlide(current);
+        }, 7000);
+    });
+</script>
+{% endblock %}

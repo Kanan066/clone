@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    body {
+        background: #eef3fd;
+        font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+        color: #232946;
+    }
+    .login-container {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .login-card {
+        background: #fff;
+        border-radius: 1.3rem;
+        box-shadow: 0 4px 24px rgba(36,81,166,0.10);
+        padding: 2.5rem 2.2rem 2.2rem 2.2rem;
+        max-width: 400px;
+        width: 100%;
+        margin: 3rem auto;
+        border: 1px solid #f1f5fa;
+    }
+    .login-card h3 {
+        color: #2451a6;
+        font-weight: 800;
+        font-size: 2rem;
+        margin-bottom: 2rem;
+        letter-spacing: 1px;
+    }
+    .form-label {
+        font-weight: 600;
+        color: #2451a6;
+        margin-bottom: 0.4rem;
+        display: block;
+        font-size: 1.05rem;
+    }
+    .form-control {
+        width: 100%;
+        padding: 0.7rem 1rem;
+        border-radius: 0.8rem;
+        border: 1.5px solid #e6edfa;
+        background: #f8faff;
+        font-size: 1.08rem;
+        color: #232946;
+        transition: border 0.16s;
+        outline: none;
+        margin-bottom: 1.2rem;
+    }
+    .form-control:focus {
+        border: 1.5px solid #2451a6;
+        background: #f4f7fe;
+    }
+    .btn-primary {
+        width: 100%;
+        background: #2451a6;
+        color: #fff;
+        border: none;
+        border-radius: 2rem;
+        padding: 0.8rem 0;
+        font-size: 1.13rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 8px rgba(36,81,166,0.09);
+        cursor: pointer;
+        transition: background 0.18s;
+        margin-top: 0.4rem;
+    }
+    .btn-primary:hover {
+        background: #1c3a70;
+    }
+    .login-card .text-center {
+        margin-top: 1.3rem;
+        font-size: 1.01rem;
+    }
+    .login-card a {
+        color: #2451a6;
+        text-decoration: underline;
+        font-weight: 600;
+        transition: color 0.16s;
+    }
+    .login-card a:hover {
+        color: #1c3a70;
+    }
+    @media (max-width: 600px) {
+        .login-card {
+            padding: 1.2rem 0.7rem;
+        }
+        .login-card h3 {
+            font-size: 1.3rem;
+        }
+    }
+</style>
+
+<div class="login-container">
+    <div class="login-card">
+        <h3 class="text-center">Login</h3>
+        <form method="POST" action="{% url 'store:login' %}">
+            {% csrf_token %}
+            <label for="email" class="form-label">Email address</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" name="password" required>
+
+            <button type="submit" class="btn-primary">Login</button>
+        </form>
+        <div class="text-center">
+            <p>Don't have an account? <a href="{% url 'store:register' %}">Register here</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

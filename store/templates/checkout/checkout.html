@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    body {
+        background: #f4f7fe;
+        font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+        color: #232946;
+    }
+    .checkout-container {
+        display: flex;
+        gap: 2.5rem;
+        max-width: 1100px;
+        margin: 2.5rem auto 2rem auto;
+        padding: 0 1rem;
+        flex-wrap: wrap;
+    }
+    .checkout-main {
+        flex: 2;
+        min-width: 320px;
+    }
+    .checkout-summary {
+        flex: 1;
+        min-width: 260px;
+        max-width: 350px;
+    }
+    .card {
+        background: #fff;
+        border-radius: 1.2rem;
+        box-shadow: 0 2px 16px rgba(36,81,166,0.08);
+        margin-bottom: 2rem;
+        overflow: hidden;
+        border: 1px solid #f1f5fa;
+    }
+    .card-header {
+        background: #f4f7fe;
+        padding: 1.2rem 1.7rem;
+        border-bottom: 1px solid #e6edfa;
+    }
+    .card-header h3, .card-header h4 {
+        margin: 0;
+        color: #2451a6;
+        font-weight: 700;
+        font-size: 1.3rem;
+        letter-spacing: 0.5px;
+    }
+    .card-body {
+        padding: 1.7rem 1.7rem 1.2rem 1.7rem;
+    }
+    form label {
+        font-weight: 600;
+        color: #2451a6;
+        margin-bottom: 0.3rem;
+        display: block;
+        font-size: 1.01rem;
+    }
+    .form-row {
+        display: flex;
+        gap: 1.2rem;
+        margin-bottom: 1.2rem;
+    }
+    .form-group {
+        flex: 1;
+        margin-bottom: 1.2rem;
+    }
+    .form-control {
+        width: 100%;
+        padding: 0.6rem 1rem;
+        border-radius: 0.8rem;
+        border: 1.5px solid #e6edfa;
+        background: #f8faff;
+        font-size: 1.05rem;
+        color: #232946;
+        transition: border 0.15s;
+        outline: none;
+        margin-top: 0.2rem;
+    }
+    .form-control:focus {
+        border: 1.5px solid #2451a6;
+        background: #f4f7fe;
+    }
+    hr {
+        border: none;
+        border-top: 1.5px solid #e6edfa;
+        margin: 1.5rem 0;
+    }
+    h4 {
+        font-size: 1.15rem;
+        color: #2451a6;
+        font-weight: 700;
+        margin-bottom: 1.2rem;
+        letter-spacing: 0.3px;
+    }
+    .btn, button.btn {
+        display: inline-block;
+        padding: 0.8rem 1.8rem;
+        border-radius: 2rem;
+        font-weight: 700;
+        font-size: 1.13rem;
+        text-align: center;
+        text-decoration: none;
+        border: none;
+        background: #2451a6;
+        color: #fff;
+        box-shadow: 0 2px 8px rgba(36,81,166,0.08);
+        cursor: pointer;
+        transition: background 0.18s, box-shadow 0.18s;
+        width: 100%;
+        margin-top: 0.8rem;
+    }
+    .btn:hover, button.btn:hover {
+        background: #1c3a70;
+    }
+    .order-summary-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1.1rem;
+        font-size: 1.07rem;
+    }
+    .order-summary-row.h5 {
+        font-size: 1.13rem;
+        font-weight: 700;
+        color: #2451a6;
+    }
+    @media (max-width: 900px) {
+        .checkout-container {
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .checkout-main, .checkout-summary {
+            min-width: 0;
+            max-width: 100%;
+        }
+        .form-row { flex-direction: column; gap: 0.2rem; }
+    }
+    @media (max-width: 600px) {
+        .card-header, .card-body {
+            padding: 1rem 0.7rem;
+        }
+        .btn, button.btn {
+            font-size: 1rem;
+            padding: 0.7rem 1.2rem;
+        }
+    }
+</style>
+
+<div class="checkout-container">
+    <!-- Shipping and Payment Form -->
+    <div class="checkout-main">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="mb-0">Shipping Information</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{% url 'store:checkout_process' %}" id="checkout-form">
+                    {% csrf_token %}
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName">First Name</label>
+                            <input type="text" class="form-control" id="firstName" name="firstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Last Name</label>
+                            <input type="text" class="form-control" id="lastName" name="lastName" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Address</label>
+                        <input type="text" class="form-control" id="address" name="address" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="city">City</label>
+                            <input type="text" class="form-control" id="city" name="city" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="state">State</label>
+                            <input type="text" class="form-control" id="state" name="state" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="zip">ZIP Code</label>
+                            <input type="text" class="form-control" id="zip" name="zip" required>
+                        </div>
+                    </div>
+                    <hr>
+                    <h4 class="mb-3">Payment Information</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="cardName">Name on Card</label>
+                            <input type="text" class="form-control" id="cardName" name="cardName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cardNumber">Card Number</label>
+                            <input type="text" class="form-control" id="cardNumber" name="cardNumber" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="expMonth">Expiration Month</label>
+                            <input type="text" class="form-control" id="expMonth" name="expMonth" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="expYear">Expiration Year</label>
+                            <input type="text" class="form-control" id="expYear" name="expYear" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cvv">CVV</label>
+                            <input type="text" class="form-control" id="cvv" name="cvv" required>
+                        </div>
+                    </div>
+                    <hr>
+                    <button class="btn" type="submit">
+                        Place Order
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="checkout-summary">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Order Summary</h4>
+            </div>
+            <div class="card-body">
+                {% for item in cart_items %}
+                    <div class="order-summary-row">
+                        <span>{{ item.product.name }} x {{ item.quantity }}</span>
+                        <span>${{ item.product.price|floatformat:2 }}</span>
+                    </div>
+                {% endfor %}
+                <hr>
+                <div class="order-summary-row h5">
+                    <span>Total</span>
+                    <span>${{ total|floatformat:2 }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

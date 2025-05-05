@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    body {
+        background: #eef3fd;
+        font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+        color: #232946;
+    }
+    .register-container {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .register-card {
+        background: #fff;
+        border-radius: 1.5rem;
+        box-shadow: 0 4px 32px rgba(36,81,166,0.12);
+        padding: 2.6rem 2.2rem 2.2rem 2.2rem;
+        max-width: 420px;
+        width: 100%;
+        margin: 3rem auto;
+        border: 1px solid #f1f5fa;
+    }
+    .register-card h3 {
+        color: #2451a6;
+        font-weight: 800;
+        font-size: 2rem;
+        margin-bottom: 2rem;
+        letter-spacing: 1px;
+        text-align: center;
+    }
+    .form-label {
+        font-weight: 600;
+        color: #2451a6;
+        margin-bottom: 0.4rem;
+        display: block;
+        font-size: 1.05rem;
+    }
+    .form-control {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border-radius: 1rem;
+        border: 1.5px solid #e6edfa;
+        background: #f8faff;
+        font-size: 1.08rem;
+        color: #232946;
+        transition: border 0.16s;
+        outline: none;
+        margin-bottom: 1.2rem;
+    }
+    .form-control:focus {
+        border: 1.5px solid #2451a6;
+        background: #f4f7fe;
+    }
+    .btn-primary {
+        width: 100%;
+        background: #2451a6;
+        color: #fff;
+        border: none;
+        border-radius: 2rem;
+        padding: 0.85rem 0;
+        font-size: 1.13rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 8px rgba(36,81,166,0.09);
+        cursor: pointer;
+        transition: background 0.18s;
+        margin-top: 0.4rem;
+    }
+    .btn-primary:hover {
+        background: #1c3a70;
+    }
+    .register-card .text-center {
+        margin-top: 1.3rem;
+        font-size: 1.01rem;
+    }
+    .register-card a {
+        color: #2451a6;
+        text-decoration: underline;
+        font-weight: 600;
+        transition: color 0.16s;
+    }
+    .register-card a:hover {
+        color: #1c3a70;
+    }
+    @media (max-width: 600px) {
+        .register-card {
+            padding: 1.2rem 0.7rem;
+        }
+        .register-card h3 {
+            font-size: 1.3rem;
+        }
+    }
+</style>
+
+<div class="register-container">
+    <div class="register-card">
+        <h3>Register</h3>
+        <form method="POST" action="{% url 'store:register' %}">
+            {% csrf_token %}
+            <label for="username" class="form-label">Username</label>
+            <input type="text" class="form-control" id="username" name="username" required>
+
+            <label for="email" class="form-label">Email address</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+
+            <label for="password1" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password1" name="password1" required>
+
+            <label for="password2" class="form-label">Confirm Password</label>
+            <input type="password" class="form-control" id="password2" name="password2" required>
+
+            <button type="submit" class="btn-primary">Register</button>
+        </form>
+        <div class="text-center">
+            <p>Already have an account? <a href="{% url 'store:login' %}">Login here</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}
