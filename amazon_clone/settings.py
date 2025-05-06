@@ -12,6 +12,16 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os 
+import os
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    BASE_DIR / "store" / "static"  # ✅ Yeh important hai
+]
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -81,7 +91,8 @@ DATABASES = {
     }
 }
 
-
+RAZORPAY_KEY_ID = 'rzp_test_70WJE5QjTg0lx9'
+RAZORPAY_SECRET = '037yVTb7wNn5I8Y0vnqgYmT9'
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 

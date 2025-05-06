@@ -7,6 +7,56 @@ from .models import User, Product, Category, CartItem, Order, OrderItem
 from .forms import RegistrationForm, LoginForm
 from django.conf import settings
 import logging
+from .models import Payment
+import razorpay
+from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+import json
+
+client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_SECRET))
+
+@csrf_exempt
+def create_order(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        name = data.get("name")
+        amount = data.get("amount")
+
+        razorpay_order = client.order.create({
+            "amount": amount,
+            "currency": "INR",
+            "payment_capture": 1
+        })
+
+        # Save in database
+        Payment.objects.create(
+            customer_name=name,
+            razorpay_order_id=razorpay_order['id'],
+            amount=amount,
+            status="created"
+        )
+
+        return JsonResponse({
+            "order_id": razorpay_order['id'],
+            "amount": amount,
+            "key": settings.RAZORPAY_KEY_ID
+        })
+@csrf_exempt
+def payment_success(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        order_id = data.get("order_id")
+        payment_id = data.get("payment_id")
+
+        try:
+            payment = Payment.objects.get(razorpay_order_id=order_id)
+            payment.razorpay_payment_id = payment_id
+            payment.status = "paid"
+            payment.save()
+            return JsonResponse({"status": "success"})
+        except Payment.DoesNotExist:
+            return JsonResponse({"status": "order not found"}, status=404)
 
 logger = logging.getLogger(__name__)
 
